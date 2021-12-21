@@ -3,28 +3,42 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+name : Docker-CI
 trigger:
-- master
-
+  branches:
+    include:
+      - master
+ 
 pool:
-  vmImage: ubuntu-latest
-
+  vmImage: 'ubuntu-latest'
+ 
 variables:
-  buildConfiguration: 'Release'
-
+  ImageName: 'wolfgangofner/microservicedemo:$(Build.BuildId)'
+ 
 stages:
 - stage: Build
   displayName: Build image
   jobs:  
-  - job: DockerImage
+  - job: Build
     displayName: Build and push Docker image
     steps:
-      - task: Docker@2
-        inputs:
-          containerRegistry: 'DockerID'
-          repository: 'minimalapidocker'
-          command: 'buildAndPush'
-          Dockerfile: '**/Dockerfile'
-   
+    - task: Docker@1
+      displayName: 'Build the Docker image'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Build an image'
+        dockerFile: '**/Dockerfile'
+        imageName: '$(ImageName)'
+        includeLatestTag: true
+        useDefaultContext: false
+        buildContext: '.'
      
-       
+    - task: Docker@1
+      displayName: 'Push the Docker image to Dockerhub'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Push an image'
+        imageName: '$(ImageName)'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
