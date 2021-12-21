@@ -1,0 +1,24 @@
+version: '3.4'
+
+
+services:
+  minimalapidocker:
+    container_name: minimalapidocker
+    ports:
+      - 5000:80
+    environment:
+          MongoDB__Host: mongo
+    depends_on:
+      - mongo
+  mongo:
+    container_name: mongo
+    restart: always
+    ports:
+      - 27017:27017
+  mongo-express:
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo

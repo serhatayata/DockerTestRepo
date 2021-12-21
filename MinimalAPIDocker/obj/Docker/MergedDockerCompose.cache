@@ -1,0 +1,38 @@
+services:
+  minimalapidocker:
+    build:
+      context: .
+      dockerfile: MinimalAPIDocker/Dockerfile
+    container_name: minimalapidocker
+    depends_on:
+      mongo:
+        condition: service_started
+    environment:
+      MongoDB__Host: mongo
+    image: minimalapidocker
+    ports:
+    - mode: ingress
+      target: 80
+      published: 5000
+      protocol: tcp
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+    - mode: ingress
+      target: 27017
+      published: 27017
+      protocol: tcp
+    restart: always
+  mongo-express:
+    container_name: mongo-express
+    depends_on:
+      mongo:
+        condition: service_started
+    image: mongo-express
+    ports:
+    - mode: ingress
+      target: 8081
+      published: 8081
+      protocol: tcp
+    restart: always

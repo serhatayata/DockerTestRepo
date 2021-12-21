@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "868cbcea-09e9-48a2-9993-99d88dde38ae": {
+      "ProjectGuid": "868cbcea-09e9-48a2-9993-99d88dde38ae",
+      "DisplayName": "MinimalAPIDocker",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
